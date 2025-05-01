@@ -2,27 +2,24 @@ name: deploy
 
 on: workflow_dispatch
 
-inputs:
-  STACK_NAME:
-    description: "stack name"
-    required: true
-
 jobs:
-  steps:
-    - uses: actions/checkout@v4.2.2
-      with:
-        fetch-depth: 0
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_NUMBER }}:role/${{ vars.OIDC_ROLE_ARN }}
-        aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_NUMBER }}:role/${{ vars.OIDC_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
-    - name: Package and deploy
-      shell: bash
-      run: |
-        aws cloudformation deploy \
-          --stack-name ${{ inputs.STACK_NAME }} \
-          --template-file cloudformation.yml \
-          --role-arn ${{ vars.CLOUDFORMATION_ROLE_ARN }}
+      - name: Package and deploy
+        shell: bash
+        run: |
+          aws cloudformation deploy \
+            --stack-name ${{ vars.STACK_NAME }} \
+            --template-file cloudformation.yml \
+            --role-arn ${{ vars.CLOUDFORMATION_ROLE_ARN }}
