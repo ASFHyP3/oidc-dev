@@ -13,14 +13,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.OIDC_ROLE_ARN }}
           aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
-      - name: Package and deploy
-        shell: bash
+      - shell: bash
         run: |
           aws cloudformation deploy \
             --stack-name ${{ vars.STACK_NAME }} \
